@@ -21,14 +21,15 @@ namespace MVC5Course.Controllers
         // GET: Products
         public ActionResult Index()
         {
-            var data = db.Product.AsQueryable();
-            data = data.Where(p => p.ProductName.Contains("100")).Take(20);
-            data = data.OrderBy(p => p.ProductId);
+            //var data = db.Product.AsQueryable();
+            //data = data.Where(p => p.ProductName.Contains("100")).Take(20);
+            //data = data.OrderBy(p => p.ProductId);
 
-            //var data1 = from p in db.Product
-            //    where p.ProductName.Contains("fabric")
-            //    orderby p.ProductId
-            //    select p;
+            var data = from p in db.Product
+                       where p.ProductName.Contains("fabric")
+                       orderby p.ProductId
+                       select p;
+
             //var data2 = from p in db.Product
             //    where p.Price < 6
             //    orderby p.ProductId
@@ -200,6 +201,28 @@ namespace MVC5Course.Controllers
             db.SaveChanges();
 
             return "OK";
+        }
+
+        public ActionResult BatchUpdate()
+        {
+            var data = from p in db.Product
+                       where p.ProductName.Contains("fabric")
+                       where p.Price < 6
+                       select p;
+            foreach (var item in data)
+            {
+                item.Price = 5;
+            }
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (DbEntityValidationException ex)
+            {
+
+                throw;
+            }
+            return RedirectToAction("Index");
         }
     }
 }
