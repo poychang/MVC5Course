@@ -17,10 +17,15 @@
             <div class="btn btn-default">
                 <a href="@Url.Action("BatchUpdate")">批次更新小於6塊的變更成5塊</a>
             </div>
-            @*<input type="submit" name="submit" value="批次修改" class="btn btn-default" />*@
+            <div>
+                @using (Html.BeginForm())
+                {
+                    <input type="search" name="search" value="" placeholder="請輸入查詢關鍵字" />
+                    <input type="submit" value="搜尋" />
+                }
+            </div>
         </td>
-        <td>
-        </td>
+        <td></td>
         <td></td>
         <td></td>
         <td></td>

@@ -19,24 +19,33 @@ namespace MVC5Course.Controllers
         private FabricsEntities db = new FabricsEntities();
 
         // GET: Products
-        public ActionResult Index()
+        public ActionResult Index(string search)
         {
-            //var data = db.Product.AsQueryable();
-            //data = data.Where(p => p.ProductName.Contains("100")).Take(20);
-            //data = data.OrderBy(p => p.ProductId);
 
-            var data = from p in db.Product
-                       where p.ProductName.Contains("fabric")
-                       orderby p.ProductId
-                       select p;
+            if (!string.IsNullOrEmpty(search))
+            {
+                var data = from p in db.Product
+                           where p.ProductName.Contains(search)
+                           select p;
+                return View(data);
+            }
+            else
+            {
+                //var data = db.Product.AsQueryable();
+                //data = data.Where(p => p.ProductName.Contains("100")).Take(20);
+                //data = data.OrderBy(p => p.ProductId);
 
-            //var data2 = from p in db.Product
-            //    where p.Price < 6
-            //    orderby p.ProductId
-            //    select p;
+                var data = from p in db.Product
+                           where p.ProductName.Contains("fabric")
+                           orderby p.ProductId
+                           select p;
 
-            //return View(db.Product.ToList());
-            return View(data);
+                //var data2 = from p in db.Product
+                //    where p.Price < 6
+                //    orderby p.ProductId
+                //    select p;
+                return View(data);
+            }
         }
 
         // GET: Products/Details/5
