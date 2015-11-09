@@ -5,6 +5,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web;
+using System.Web.Management;
 using System.Web.Mvc;
 using MVC5Course.Models;
 
@@ -132,7 +133,38 @@ namespace MVC5Course.Controllers
         [HttpPost]
         public ActionResult NewProduct(Product product)
         {
+            if (ModelState.IsValid)
+            {
+                var prod = new Product();
+
+                prod.ProductName = product.ProductName;
+                prod.Price = product.Price;
+                prod.Stock = 1;
+                prod.Active = true;
+
+                db.Product.Add(prod);
+                db.SaveChanges();
+
+                return RedirectToAction("Index");
+            }
             return View(product);
+        }
+
+        public string TestInsert()
+        {
+            var db = new FabricsEntities();
+
+            db.Product.Add(new Product()
+            {
+                ProductName = "Entity Framework",
+                Price = 99,
+                Stock = 10,
+                Active = true
+            });
+
+            db.SaveChanges();
+
+            return "OK";
         }
     }
 }
