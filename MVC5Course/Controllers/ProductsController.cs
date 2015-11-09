@@ -205,6 +205,8 @@ namespace MVC5Course.Controllers
 
         public ActionResult BatchUpdate()
         {
+            //db.Database.ExecuteSqlCommand("update product set price=5 where productname like '%@p0%'", "fabric");
+
             var data = from p in db.Product
                        where p.ProductName.Contains("fabric")
                        where p.Price < 6
