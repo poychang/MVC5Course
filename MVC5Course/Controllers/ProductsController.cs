@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Net;
+using System.Runtime.Remoting.Messaging;
+using System.Security.Cryptography;
 using System.Web;
 using System.Web.Management;
 using System.Web.Mvc;
@@ -18,7 +21,21 @@ namespace MVC5Course.Controllers
         // GET: Products
         public ActionResult Index()
         {
-            return View(db.Product.ToList());
+            var data = db.Product.AsQueryable();
+            data = data.Where(p => p.ProductName.Contains("100")).Take(20);
+            data = data.OrderBy(p => p.ProductId);
+
+            //var data1 = from p in db.Product
+            //    where p.ProductName.Contains("fabric")
+            //    orderby p.ProductId
+            //    select p;
+            //var data2 = from p in db.Product
+            //    where p.Price < 6
+            //    orderby p.ProductId
+            //    select p;
+
+            //return View(db.Product.ToList());
+            return View(data);
         }
 
         // GET: Products/Details/5
@@ -143,7 +160,25 @@ namespace MVC5Course.Controllers
                 prod.Active = true;
 
                 db.Product.Add(prod);
-                db.SaveChanges();
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch (DbEntityValidationException ex)
+                {
+                    //throw ex;
+                    var allErrors = new List<string>();
+
+                    foreach (DbEntityValidationResult re in ex.EntityValidationErrors)
+                    {
+                        foreach (DbValidationError err in re.ValidationErrors)
+                        {
+                            allErrors.Add(err.ErrorMessage);
+                        }
+                    }
+
+                    ViewBag.Errors = allErrors;
+                }
 
                 return RedirectToAction("Index");
             }
